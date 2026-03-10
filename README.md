@@ -48,4 +48,9 @@ skills/file-search/
 
 ## License
 
-MIT - see [LICENSE](LICENSE) for details.
+This project uses split licensing:
+
+- **Code** (scripts, workflows, configs): [MIT](LICENSE-MIT)
+- **Content** (skill definitions, documentation, references): [CC-BY-SA-4.0](LICENSE-CC-BY-SA-4.0)
+
+See the individual license files for full terms.
