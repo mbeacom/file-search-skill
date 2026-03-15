@@ -65,7 +65,7 @@ progressive refinement workflows.
 
 1. **Start narrow, widen if needed.** Begin with the most specific search.
 2. **Use `fd` for files, `rg` for content.** Do not use `find` or `grep -r`.
-3. **Use `rga` for non-code files.** Not manual text extraction from PDFs.
+3. **Use `rga` for non-code files.** Do not manually extract text from PDFs.
 4. **Use `sg` for structural patterns.** If regex is fragile, use ast-grep.
 5. **Use `--json` output** when results feed into further processing.
 6. **Combine tools:** `fd -e py --changed-within 1d -X rg 'TODO'`

@@ -246,7 +246,7 @@ rg 'pattern' -g '*.{ts,tsx}' -g '!*.test.*' -g '!*.spec.*'
 -i              Case-insensitive search
 -w              Match whole words only
 -l              List matching file paths only (no content)
--c              Count matches per file
+-c              Count matching lines per file
 -n              Show line numbers (default)
 -t TYPE         Restrict to file type (e.g., -t py, -t js, -t go)
 -T TYPE         Exclude file type

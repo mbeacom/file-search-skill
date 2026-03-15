@@ -60,7 +60,7 @@ fd -e ts -E node_modules -E dist
 fd -H '^\.' -t f
 
 # Find files and pipe to rg for content search
-fd -e py | xargs rg 'import os'
+fd -0 -e py | xargs -0 rg 'import os'
 ```
 
 ---
