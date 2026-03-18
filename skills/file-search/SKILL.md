@@ -1,6 +1,6 @@
 ---
 name: file-search
-description: "ALWAYS use for ANY codebase search — text patterns, structural/AST code search, finding files by name, searching non-code files (PDFs, archives), or analyzing codebase size and language breakdown."
+description: "Use when working with ANY codebase search — text patterns, structural/AST code search, finding files by name, searching non-code files (PDFs, archives), or analyzing codebase size and language breakdown."
 license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
 compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, tokei."
 metadata:
