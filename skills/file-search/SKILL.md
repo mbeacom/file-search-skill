@@ -1,6 +1,13 @@
 ---
 name: file-search
-description: "Use when searching codebases for text patterns, structural code patterns, finding files by name, searching non-code files, or analyzing codebase size. Provides efficient tool selection guidance."
+description: "ALWAYS use for ANY codebase search — text patterns, structural/AST code search, finding files by name, searching non-code files (PDFs, archives), or analyzing codebase size and language breakdown."
+license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
+compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, tokei."
+metadata:
+  author: Netresearch DTT GmbH
+  version: "1.0.2"
+  repository: https://github.com/netresearch/file-search-skill
+allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Read Glob Grep
 ---
 
 # File Search Skill
@@ -48,27 +55,22 @@ fd -e py --changed-within 1d        # Python files changed today
 fd -g '*_test.go' -X rg 'func Test' # verify test files have tests
 ```
 
-## Targeting Your Searches
+## Targeting Searches
 
-- **Specify file types** (`rg -t py`, `sg --lang go`, `fd -e ts`) to cut
-  search space dramatically.
-- **Limit directory scope** (`rg pattern src/api/`) -- never search from root.
-- **Count before viewing** (`rg -c pattern -t py | wc -l`) -- if results
-  exceed ~50 files, narrow the search.
-- **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`) -- skip generated
-  and vendored code.
+- **File types** (`rg -t py`, `sg --lang go`, `fd -e ts`) -- cuts search space.
+- **Directory scope** (`rg pattern src/api/`) -- never search from root.
+- **Count first** (`rg -c pattern | wc -l`) -- narrow if >50 files.
+- **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
 
-See [references/search-strategies.md](references/search-strategies.md) for
-progressive refinement workflows.
+See [references/search-strategies.md](references/search-strategies.md).
 
 ## Best Practices
 
-1. **Start narrow, widen if needed.** Begin with the most specific search.
-2. **Use `fd` for files, `rg` for content.** Do not use `find` or `grep -r`.
-3. **Use `rga` for non-code files.** Do not manually extract text from PDFs.
-4. **Use `sg` for structural patterns.** If regex is fragile, use ast-grep.
-5. **Use `--json` output** when results feed into further processing.
-6. **Combine tools:** `fd -e py --changed-within 1d -X rg 'TODO'`
+1. **Start narrow, widen if needed.** Most specific search first.
+2. **`fd` for files, `rg` for content.** Never `find` or `grep -r`.
+3. **`rga` for non-code files.** Never manually extract PDFs.
+4. **`sg` for structural patterns.** Use ast-grep when regex is fragile.
+5. **`--json` output** when piping to further processing.
 
 ## References
 

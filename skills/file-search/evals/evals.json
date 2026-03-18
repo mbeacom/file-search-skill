@@ -1,0 +1,44 @@
+{
+  "skill_name": "file-search",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "find-todo-comments",
+      "prompt": "Find all TODO comments in this codebase. Give me a count per file and show the top files with the most TODOs.",
+      "expected_output": "Uses rg with -c flag to count TODO occurrences per file, sorted by count.",
+      "files": [],
+      "assertions": [
+        "Uses rg (ripgrep), not grep or grep -r",
+        "Uses -c flag or equivalent for per-file counts",
+        "Sorts or presents results by frequency",
+        "Does not search in node_modules or vendor directories"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "search-function-definition",
+      "prompt": "Search for the definition of a function called 'processEvent' in this Go codebase. I need to find where it's defined, not where it's called.",
+      "expected_output": "Uses rg with Go function definition pattern or sg with structural AST search to find func processEvent.",
+      "files": [],
+      "assertions": [
+        "Uses rg with -t go or sg --lang go (not find or grep)",
+        "Pattern targets function definitions (func keyword), not calls",
+        "Limits search to Go files only",
+        "Command is syntactically valid"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "find-files-by-extension",
+      "prompt": "Find all TypeScript test files (*.test.ts and *.spec.ts) that were modified in the last week.",
+      "expected_output": "Uses fd with extension and time filters to locate recent test files.",
+      "files": [],
+      "assertions": [
+        "Uses fd (not find or ls -R)",
+        "Filters by .test.ts and .spec.ts extensions",
+        "Uses --changed-within flag for time-based filtering",
+        "Excludes node_modules directory"
+      ]
+    }
+  ]
+}
