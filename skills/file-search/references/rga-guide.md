@@ -51,6 +51,20 @@ rga -l 'password' /shared/docs/
 
 ---
 
+## Dependencies
+
+rga requires adapters to process different file types:
+
+- **PDF**: `poppler` (pdftotext) — usually pre-installed on Linux
+- **Office (.docx, .xlsx, .pptx)**: built-in via `zip` + XML parsing
+- **Legacy Office (.doc, .xls)**: requires `libreoffice` or `catdoc`
+- **Archives**: requires standard tools (`tar`, `unzip`, etc.)
+
+Install adapters: `sudo apt install poppler-utils` (Debian/Ubuntu) or
+`brew install poppler` (macOS).
+
+---
+
 ## Cache Behavior
 
 rga caches extracted text for faster subsequent searches. The cache is stored

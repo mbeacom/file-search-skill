@@ -329,6 +329,10 @@ ripgrep has built-in type definitions. List all with `rg --type-list`.
 Common types: `py`, `js`, `ts`, `go`, `rust`, `java`, `php`, `ruby`, `css`,
 `html`, `json`, `yaml`, `toml`, `md`, `sh`, `sql`, `c`, `cpp`.
 
+**Note:** `-t ts` matches `.ts` AND `.tsx` files. There is no separate `-t tsx`
+type. Similarly, `-t js` matches `.js`, `.jsx`, `.mjs`. Use `rg --type-list`
+to see what extensions each type includes.
+
 ```bash
 # Multiple types
 rg 'pattern' -t js -t ts

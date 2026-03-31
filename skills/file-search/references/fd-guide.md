@@ -28,6 +28,26 @@ Fast, user-friendly file finder. Replaces `find` with sane defaults: respects
 
 ---
 
+## Important: `-e` Matches the Literal Final Extension Only
+
+`fd -e ts` matches `*.ts` — files whose extension is exactly `.ts`. Unlike
+`rg -t ts` (which includes `.tsx`), `fd -e` is a **literal extension match**:
+
+```bash
+fd -e ts                            # matches *.ts only (NOT *.tsx)
+fd -e js                            # matches *.js only (NOT *.jsx or *.mjs)
+fd -e ts -e tsx                     # matches *.ts AND *.tsx
+
+# WRONG: compound suffixes don't work with -e
+fd -e test.ts                       # matches nothing useful
+
+# RIGHT: use glob patterns for compound suffixes
+fd -g '*.test.ts'                   # matches foo.test.ts
+fd -g '*.{test,spec}.ts'           # matches foo.test.ts and foo.spec.ts
+```
+
+---
+
 ## Common Usage
 
 ```bash
