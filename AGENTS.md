@@ -6,6 +6,8 @@
 .
 ├── skills/file-search/
 │   ├── SKILL.md                        # Main skill definition
+│   ├── evals/
+│   │   └── evals.json                  # Skill effectiveness tests
 │   └── references/
 │       ├── ripgrep-patterns.md         # rg flags, patterns, and recipes
 │       ├── ast-grep-patterns.md        # Structural search patterns by language
@@ -13,12 +15,15 @@
 │       ├── rga-guide.md               # ripgrep-all for non-code files
 │       ├── tool-comparison.md          # Detailed tool comparison and decision guide
 │       ├── search-strategies.md        # Search targeting strategies
-│       └── code-metrics.md            # tokei/scc code statistics guide
-├── .github/workflows/                  # CI workflows
+│       ├── code-metrics.md            # tokei/scc code statistics guide
+│       └── remote-handoff.md          # When to hand off to remote tools
+├── Build/
+│   ├── Scripts/check-plugin-version.sh # Version sync check (plugin.json ↔ SKILL.md)
+│   └── hooks/pre-push                  # Git pre-push hook
+├── .github/workflows/                  # CI workflows (release, lint, harness, auto-merge)
 ├── composer.json                       # PHP package metadata
-├── docs/                               # Architecture and planning docs
-│   ├── ARCHITECTURE.md
-│   └── exec-plans/
+├── docs/
+│   └── ARCHITECTURE.md                 # Architecture overview
 ├── scripts/
 │   └── verify-harness.sh              # Harness verification script
 └── README.md
@@ -26,9 +31,10 @@
 
 ## Commands
 
-No Makefile or build scripts. This is a documentation-only skill repo.
-
 - `bash scripts/verify-harness.sh --format=text --status` — check harness maturity level
+- `bash Build/Scripts/check-plugin-version.sh` — verify plugin.json and SKILL.md versions match
+
+Git hooks are auto-configured via `.envrc` (`git config core.hooksPath Build/hooks`).
 
 ## Rules
 
@@ -51,3 +57,4 @@ No Makefile or build scripts. This is a documentation-only skill repo.
 - [Tool Comparison](skills/file-search/references/tool-comparison.md) — decision guide
 - [Search Strategies](skills/file-search/references/search-strategies.md) — targeting strategies
 - [Code Metrics](skills/file-search/references/code-metrics.md) — tokei/scc guide
+- [Remote Handoff](skills/file-search/references/remote-handoff.md) — when to use remote tools
