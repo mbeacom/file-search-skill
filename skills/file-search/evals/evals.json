@@ -325,6 +325,102 @@
         "Uses -t js or -t ts to further scope to source files",
         "Command is concise — no long find|xargs|grep pipelines"
       ]
+    },
+    {
+      "id": 26,
+      "eval_name": "php-empty-catch-blocks",
+      "prompt": "Find all empty catch blocks in this PHP codebase. I want to find places where exceptions are silently swallowed.",
+      "expected_output": "Uses sg (ast-grep) with --lang php and a structural pattern targeting empty catch blocks.",
+      "files": [],
+      "assertions": [
+        "Uses sg (ast-grep), not grep or rg — structural matching handles whitespace/formatting variations that regex cannot",
+        "Specifies --lang php for PHP language targeting",
+        "Pattern targets catch blocks with empty bodies, e.g. 'catch ($EXCEPTION) { }' or similar structural pattern",
+        "Command is syntactically valid and would produce meaningful results on a PHP codebase"
+      ],
+      "model_notes": "Smaller models may default to rg -U multiline regex instead of sg. The skill's ast-grep-patterns.md reference must be loaded to know --lang php is supported and to pick the right pattern syntax."
+    },
+    {
+      "id": 27,
+      "eval_name": "php-class-definitions",
+      "prompt": "List all class definitions in this PHP project, including those that extend a base class or implement an interface.",
+      "expected_output": "Uses sg (ast-grep) with --lang php and structural patterns for class declarations with optional inheritance.",
+      "files": [],
+      "assertions": [
+        "Uses sg (ast-grep) with --lang php, not grep/rg — AST search captures all class variants (plain, extends, implements) structurally",
+        "Specifies --lang php for PHP language targeting",
+        "Pattern covers class definitions, e.g. 'class $NAME { $$$ }' or broader patterns for extends/implements",
+        "Does not rely on fragile regex that would miss multi-line class declarations or unusual formatting"
+      ]
+    },
+    {
+      "id": 28,
+      "eval_name": "python-decorated-functions",
+      "prompt": "Find all decorated functions in this Python project. I want to see which decorators are being used and on which functions.",
+      "expected_output": "Uses sg (ast-grep) with --lang py and a structural pattern for decorated function definitions.",
+      "files": [],
+      "assertions": [
+        "Uses sg (ast-grep), not grep or rg — structural matching captures decorator+function pairs as a unit, regardless of decorator complexity",
+        "Specifies --lang py for Python language targeting",
+        "Pattern captures decorated functions, e.g. '@$DECORATOR def $NAME($$$): $$$' or equivalent structural pattern",
+        "Command is syntactically valid and handles single-line and multi-line decorators"
+      ],
+      "model_notes": "Smaller models may attempt rg '@\\w+' which finds decorator lines but misses the associated function. The skill's ast-grep-patterns.md shows the correct multi-line pattern with newline between decorator and def."
+    },
+    {
+      "id": 29,
+      "eval_name": "python-bare-except",
+      "prompt": "Find all bare except blocks in this Python codebase — places where 'except:' is used without specifying an exception type. These catch SystemExit and KeyboardInterrupt which is usually a bug.",
+      "expected_output": "Uses sg (ast-grep) with --lang py and a structural pattern for bare except clauses.",
+      "files": [],
+      "assertions": [
+        "Uses sg (ast-grep) with --lang py, not rg — AST matching distinguishes bare 'except:' from 'except SomeError:' structurally",
+        "Specifies --lang py for Python language targeting",
+        "Pattern targets bare except blocks: 'try: $$$ except: $$$' or equivalent without an exception type",
+        "Does not use regex that would false-positive on 'except Exception:' or 'except ValueError:'"
+      ],
+      "model_notes": "Smaller models often suggest rg 'except:' which also matches 'except Exception:' lines. The skill's ast-grep pattern 'try:\\n    $$$\\nexcept:\\n    $$$' is structurally precise and avoids false positives."
+    },
+    {
+      "id": 30,
+      "eval_name": "go-unwrapped-errors",
+      "prompt": "Find all places in this Go codebase where errors are returned without wrapping — 'return err' instead of 'return fmt.Errorf(\"...: %w\", err)'. These lose context about where the error originated.",
+      "expected_output": "Uses sg (ast-grep) with --lang go and a structural pattern for bare error returns without wrapping.",
+      "files": [],
+      "assertions": [
+        "Uses sg (ast-grep) with --lang go, not rg — structural pattern 'if $ERR != nil { return $ERR }' matches the exact unwrapped-error idiom",
+        "Specifies --lang go for Go language targeting",
+        "Pattern targets the unwrapped error return pattern: 'if $ERR != nil { return $ERR }' or similar",
+        "Does not false-positive on properly wrapped errors using fmt.Errorf with %w"
+      ],
+      "model_notes": "Smaller models may suggest rg 'return err' which matches variable names like 'return errorCode' and misses multi-return patterns like 'return nil, err'. The sg pattern is structurally precise."
+    },
+    {
+      "id": 31,
+      "eval_name": "multi-tool-php-import-size",
+      "prompt": "Find all PHP files that import the 'GuzzleHttp\\Client' class, then check if any of those files are larger than 10KB. Large files using HTTP clients might need refactoring.",
+      "expected_output": "Combines rg to find import statements with fd -S for size filtering, or uses a pipeline approach.",
+      "files": [],
+      "assertions": [
+        "Uses rg to find 'use GuzzleHttp\\Client' or equivalent import pattern in PHP files",
+        "Uses fd with -S or --size flag to check file sizes against the 10KB threshold",
+        "Combines the tools in a pipeline or sequential approach (e.g., rg -l | xargs fd -S, or fd -S + rg)",
+        "Targets PHP files specifically with -t php or -e php"
+      ]
+    },
+    {
+      "id": 32,
+      "eval_name": "multi-tool-tokei-then-search",
+      "prompt": "Get a language breakdown of this project, then search the dominant language for any functions marked as deprecated (via comments or annotations).",
+      "expected_output": "Uses tokei or scc for language stats first, then rg or sg with appropriate language filter for deprecated markers.",
+      "files": [],
+      "assertions": [
+        "Uses tokei or scc as the first step to determine the dominant language",
+        "Uses rg or sg as the second step to search for deprecated markers (@deprecated, @Deprecated, #[deprecated], etc.)",
+        "Applies language-specific file type filter (-t or --lang) based on the tokei/scc output",
+        "Executes as a deliberate two-step workflow rather than guessing the dominant language"
+      ],
+      "model_notes": "Smaller models may skip the tokei step and guess the dominant language, or search all languages. The skill teaches the count-first-then-drill-down pattern explicitly."
     }
   ]
 }
