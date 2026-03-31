@@ -62,15 +62,23 @@ composer require netresearch/file-search-skill
 ```
 
 Requires [netresearch/composer-agent-skill-plugin](https://github.com/netresearch/composer-agent-skill-plugin).
+
 ## Skill Structure
 
 ```
 skills/file-search/
   SKILL.md                          # Main skill file (tool selection, usage, best practices)
+  evals/
+    evals.json                      # Evaluation definitions for testing skill effectiveness
   references/
     ripgrep-patterns.md             # Extensive rg pattern recipes by use case
     ast-grep-patterns.md            # Structural search patterns by language
+    fd-guide.md                     # fd file finder guide
+    rga-guide.md                    # ripgrep-all for non-code files
     tool-comparison.md              # Detailed comparison and decision guide
+    search-strategies.md            # Search targeting strategies
+    code-metrics.md                 # tokei/scc code statistics guide
+    remote-handoff.md               # When to hand off to remote tools
 ```
 
 ## License

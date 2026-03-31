@@ -1,19 +1,18 @@
 ---
 name: file-search
-description: "Use when working with ANY codebase search — text patterns, structural/AST code search, finding files by name, searching non-code files (PDFs, archives), or analyzing codebase size and language breakdown."
+description: "Use when searching codebases (text, structural/AST, files by name, PDFs/archives, code stats) or building context before a task."
 license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
-compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, tokei."
+compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, rga, tokei, scc."
 metadata:
   author: Netresearch DTT GmbH
   version: "1.1.1"
   repository: https://github.com/netresearch/file-search-skill
-allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Read Glob Grep
+allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Bash(rga:*) Bash(tokei:*) Bash(scc:*) Read Glob Grep
 ---
 
 # File Search Skill
 
-Efficient CLI search tools for AI agents. Covers tool selection, targeting
-strategies, and best practices.
+Efficient CLI search tools for AI agents.
 
 ## Tool Selection Guide
 
@@ -26,51 +25,38 @@ strategies, and best practices.
 | Count lines of code by language | `tokei` | `cloc`, `wc -l` |
 | Code stats with complexity metrics | `scc` | `cloc`, `tokei` |
 
-**Decision flow:**
-
-1. Text pattern in source code? --> `rg`
-2. Code structure (function signatures, class patterns)? --> `sg`
-3. Files by name, extension, or type? --> `fd`
-4. Inside PDFs, Word docs, spreadsheets, archives? --> `rga`
-5. Codebase size/language breakdown? --> `tokei` or `scc`
+**Decision flow:** text/regex → `rg` | code structure (empty catches,
+function sigs, multi-line patterns) → `sg` | files by name → `fd` |
+PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
 
 ## Quick Examples
 
-**rg** -- text/regex search:
 ```bash
-rg 'def \w+\(' -t py src/          # Python function defs in src/
-rg -c 'TODO' -t js | wc -l         # count files with TODOs
-rg 'pattern' -g '!vendor/' -g '!node_modules/'  # exclude noise
+rg 'def \w+\(' -t py src/          # rg: text search in Python files
+rg -c 'TODO' -t js | wc -l         # rg: count first, then drill down
+sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js  # sg: structural replace
+fd -g '*.test.ts' --changed-within 1d  # fd: -g for compound suffixes (NOT -e)
+fd -g '*_test.go' -X rg 'func Test'   # fd+rg: find files, verify contents
+rga 'quarterly revenue' docs/       # rga: search inside PDFs/archives
+tokei --sort code                   # tokei: language stats
+scc --wide                          # scc: complexity + COCOMO
 ```
-
-**sg** -- structural/AST search:
-```bash
-sg --pattern 'if $ERR != nil { return $ERR }' --lang go   # unwrapped errors
-sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js
-```
-
-**fd** -- find files:
-```bash
-fd -e py --changed-within 1d        # Python files changed today
-fd -g '*_test.go' -X rg 'func Test' # verify test files have tests
-```
-
-## Targeting Searches
-
-- **File types** (`rg -t py`, `sg --lang go`, `fd -e ts`) -- cuts search space.
-- **Directory scope** (`rg pattern src/api/`) -- never search from root.
-- **Count first** (`rg -c pattern | wc -l`) -- narrow if >50 files.
-- **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
-
-See [references/search-strategies.md](references/search-strategies.md).
 
 ## Best Practices
 
-1. **Start narrow, widen if needed.** Most specific search first.
-2. **`fd` for files, `rg` for content.** Never `find` or `grep -r`.
-3. **`rga` for non-code files.** Never manually extract PDFs.
-4. **`sg` for structural patterns.** Use ast-grep when regex is fragile.
-5. **`--json` output** when piping to further processing.
+1. **Start narrow.** Specify types (`-t`, `--lang`, `-e`), scope dirs, count first (`rg -c`).
+2. **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
+3. **`--json`** for programmatic processing.
+4. **rg ≠ fd types.** `rg -t ts` includes `.tsx`; `fd -e ts` does NOT. No `-t tsx` in rg.
+
+See [references/search-strategies.md](references/search-strategies.md).
+
+## Beyond Local Files
+
+If local search finds nothing and context lives in issues/PRs/external
+docs — hand off (`gh`, Jira, WebFetch). Issue keys in comments signal this.
+
+See [references/remote-handoff.md](references/remote-handoff.md).
 
 ## References
 
@@ -83,3 +69,4 @@ See [references/search-strategies.md](references/search-strategies.md).
 | tokei and scc usage | [references/code-metrics.md](references/code-metrics.md) |
 | Search targeting strategies | [references/search-strategies.md](references/search-strategies.md) |
 | Tool comparison and decision guide | [references/tool-comparison.md](references/tool-comparison.md) |
+| Remote context handoff guide | [references/remote-handoff.md](references/remote-handoff.md) |
