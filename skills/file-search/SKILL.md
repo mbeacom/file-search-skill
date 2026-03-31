@@ -1,6 +1,6 @@
 ---
 name: file-search
-description: "Use when working with ANY codebase search — text patterns, structural/AST code search, finding files by name, searching non-code files (PDFs, archives), or analyzing codebase size and language breakdown. Also use when you need to build context before a task: understanding code structure, finding relevant modules, tracing dependencies, or orienting in an unfamiliar codebase."
+description: "Use when searching codebases (text, structural/AST, files by name, PDFs/archives, code stats) or building context before a task."
 license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
 compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, rga, tokei, scc."
 metadata:
@@ -31,47 +31,23 @@ PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
 
 ## Quick Examples
 
-**rg** -- text/regex search:
 ```bash
-rg 'def \w+\(' -t py src/          # Python function defs in src/
-rg -c 'TODO' -t js | wc -l         # count files with TODOs
-rg 'pattern' -g '!vendor/' -g '!node_modules/'  # exclude noise
-```
-
-**sg** -- structural/AST search:
-```bash
-sg --pattern 'if $ERR != nil { return $ERR }' --lang go   # unwrapped errors
-sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js
-```
-
-**fd** -- find files (`-e` = final extension, `-g` = glob for compound suffixes):
-```bash
-fd -e py --changed-within 1d        # Python files changed today
-fd -g '*.test.ts'                   # -g for compound suffixes (NOT -e test.ts)
-fd -g '*_test.go' -X rg 'func Test' # verify test files have tests
-```
-
-**rga** -- search non-code files:
-```bash
-rga 'quarterly revenue' docs/       # search inside PDFs
-rga 'config' backups/*.tar.gz       # search inside archives
-```
-
-**tokei** / **scc** -- codebase metrics:
-```bash
-tokei --sort code                   # language breakdown by lines of code
-scc --wide                          # lines + complexity + COCOMO estimates
+rg 'def \w+\(' -t py src/          # rg: text search in Python files
+rg -c 'TODO' -t js | wc -l         # rg: count first, then drill down
+sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js  # sg: structural replace
+fd -g '*.test.ts' --changed-within 1d  # fd: -g for compound suffixes (NOT -e)
+fd -g '*_test.go' -X rg 'func Test'   # fd+rg: find files, verify contents
+rga 'quarterly revenue' docs/       # rga: search inside PDFs/archives
+tokei --sort code                   # tokei: language stats
+scc --wide                          # scc: complexity + COCOMO
 ```
 
 ## Best Practices
 
-1. **Start narrow, widen if needed.** Specify file types (`-t`, `--lang`, `-e`).
-2. **Count first** (`rg -c pattern | wc -l`) — narrow if >50 files.
-3. **Scope by directory** (`rg pattern src/api/`) — never search from root.
-4. **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
-5. **`--json` output** when piping to further processing.
-6. **rg types ≠ fd extensions.** `rg -t ts` includes `.tsx`; `fd -e ts` does NOT.
-   No `-t tsx` exists in rg. Use `rg -t ts` for both `.ts`+`.tsx`.
+1. **Start narrow.** Specify types (`-t`, `--lang`, `-e`), scope dirs, count first (`rg -c`).
+2. **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
+3. **`--json`** for programmatic processing.
+4. **rg ≠ fd types.** `rg -t ts` includes `.tsx`; `fd -e ts` does NOT. No `-t tsx` in rg.
 
 See [references/search-strategies.md](references/search-strategies.md).
 
