@@ -8,10 +8,10 @@
       "expected_output": "Uses rg with -c flag to count TODO occurrences per file, sorted by count.",
       "files": [],
       "assertions": [
-        "Uses rg (ripgrep), not grep — rg respects .gitignore, skipping vendor/node_modules automatically",
-        "Uses -c flag for per-file counts (outputs ~59% less data than grep full-line output, saving tokens)",
+        "Uses rg (ripgrep), not grep — rg respects .gitignore automatically",
+        "Uses -c flag for per-file counts rather than full-line output (reduces token consumption)",
         "Sorts or presents results by frequency",
-        "Command is ≤3 pipe stages (not grep|sed|sort|uniq -c|sort|head = 6 stages)"
+        "Avoids multi-stage grep|sed|sort|uniq pipelines — rg -c handles counting natively"
       ]
     },
     {
@@ -47,10 +47,10 @@
       "expected_output": "Uses rga in a single command to search inside PDFs — replaces multi-line pdftotext+grep loops.",
       "files": [],
       "assertions": [
-        "Uses rga (ripgrep-all) — 1 command vs for-loop+pdftotext+grep (4+ subprocesses per file)",
+        "Uses a single rga command (not for-loop+pdftotext+grep pipelines)",
         "Targets the docs/ directory specifically",
         "Does not attempt manual PDF text extraction (no pdftotext, no python scripts, no bash loops)",
-        "Command is under 40 characters (vs ~110 chars for pdftotext approach)"
+        "Command is concise — no shell loops or multi-step extraction"
       ]
     },
     {
@@ -99,7 +99,7 @@
       "expected_output": "Demonstrates progressive refinement: count first with rg -c, then narrow scope, then view with context.",
       "files": [],
       "assertions": [
-        "Starts with counting matches (rg -c) before viewing full results — count output is ~59% smaller than full lines",
+        "Starts with counting matches (rg -c) before viewing full results — avoids flooding context with thousands of lines",
         "Uses -t py to limit to Python files",
         "Suggests narrowing by directory or pattern if count is high",
         "Does not dump all results into context — count-first prevents token waste on thousands of matches"

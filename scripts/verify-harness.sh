@@ -226,7 +226,7 @@ check_commands() {
                 warn 2 "composer ${script}: no matching composer.json script (warning)"
                 has_composer_issue=true
             fi
-        done < <(grep -Eo '`composer[[:space:]]+[a-zA-Z0-9:_-]+' "AGENTS.md" 2>/dev/null | sed -E 's/^`composer[[:space:]]+//' || true)
+        done < <(grep -Eo '`composer[[:space:]]+[a-zA-Z0-9:._-]+' "AGENTS.md" 2>/dev/null | sed -E 's/^`composer[[:space:]]+//' || true)
         if [[ "$has_composer_issue" == false ]]; then
             local composer_count
             composer_count=$(grep -Eo '`composer [a-zA-Z0-9:_-]+' "AGENTS.md" 2>/dev/null | wc -l || true)
@@ -245,7 +245,7 @@ check_commands() {
                 warn 2 "npm run ${script}: no matching package.json script (warning)"
                 has_npm_issue=true
             fi
-        done < <(grep -Eo '`npm run[[:space:]]+[a-zA-Z0-9:_-]+' "AGENTS.md" 2>/dev/null | sed -E 's/^`npm run[[:space:]]+//' || true)
+        done < <(grep -Eo '`npm run[[:space:]]+[a-zA-Z0-9:._-]+' "AGENTS.md" 2>/dev/null | sed -E 's/^`npm run[[:space:]]+//' || true)
         if [[ "$has_npm_issue" == false ]]; then
             local npm_count
             npm_count=$(grep -Eo '`npm run [a-zA-Z0-9:_-]+' "AGENTS.md" 2>/dev/null | wc -l || true)
