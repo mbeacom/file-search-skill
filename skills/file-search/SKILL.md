@@ -5,7 +5,7 @@ license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
 compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, rga, tokei, scc."
 metadata:
   author: Netresearch DTT GmbH
-  version: "1.2.0"
+  version: "1.3.0"
   repository: https://github.com/netresearch/file-search-skill
 allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Bash(rga:*) Bash(tokei:*) Bash(scc:*) Read Glob Grep
 ---
