@@ -1,6 +1,7 @@
 {
   "name": "@netresearch/file-search-skill",
   "version": "0.0.0-source",
+  "private": true,
   "description": "Netresearch AI skill for efficient code and file search using ripgrep, ast-grep, fd, rga, tokei.",
   "license": "(MIT AND CC-BY-SA-4.0)",
   "author": "Netresearch DTT GmbH (https://www.netresearch.de/)",
