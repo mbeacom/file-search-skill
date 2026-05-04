@@ -46,8 +46,9 @@ scc --wide                          # scc: complexity + COCOMO
 
 1. **Start narrow.** Specify types (`-t`, `--lang`, `-e`), scope dirs, count first (`rg -c`).
 2. **Exclude noise** (`-g '!vendor/'`, `fd -E node_modules`).
-3. **`--json`** for programmatic processing.
-4. **rg ≠ fd types.** `rg -t ts` includes `.tsx`; `fd -e ts` does NOT. No `-t tsx` in rg.
+3. **Batch independent queries.** Union patterns with `rg -e P1 -e P2 -e P3` (one walk, one process), or issue distinct queries as parallel tool calls in a single message — never sequential `&&` chains for independent searches.
+4. **`--json`** for programmatic processing.
+5. **rg ≠ fd types.** `rg -t ts` includes `.tsx`; `fd -e ts` does NOT. No `-t tsx` in rg.
 
 See [references/search-strategies.md](references/search-strategies.md).
 
