@@ -68,3 +68,45 @@ rg -n -C 1 'from requests import' -t py
 rg 'pattern' -g '!vendor/' -g '!node_modules/' -g '!*.min.js' -g '!dist/'
 fd -e py -E __pycache__ -E .venv -E '*.pyc'
 ```
+
+---
+
+## 6. Batch & Parallelize Independent Queries
+
+`rg` walks the filesystem once per invocation. N sequential calls = N walks
++ N startup costs. Two ways to collapse that:
+
+### 6a. Union patterns in one process (`rg -e ... -e ...`)
+
+When you want any of several patterns from the same scope, pass them all
+to one `rg`:
+
+```bash
+# Good: one walk, one process
+rg -t php -e 'RequestHandlerInterface' -e 'MiddlewareInterface' -e 'PSR-15'
+
+# Bad: three walks
+rg -t php 'RequestHandlerInterface'
+rg -t php 'MiddlewareInterface'
+rg -t php 'PSR-15'
+```
+
+Use `-f patterns.txt` for many patterns. Each match line shows which
+pattern hit (use `--json` to get pattern IDs reliably).
+
+### 6b. Parallel tool calls for distinct scopes/intents
+
+When queries differ enough that `-e` union would mix unrelated results
+(different file types, different directories, different post-processing),
+issue them as **parallel tool calls in a single message** rather than
+sequentially. The agent harness runs them concurrently; total wall time
+≈ slowest single call.
+
+Good candidates for parallel calls:
+
+- Different file types: `rg -t php X` + `rg -t js X` + `rg -t ts X`
+- Different directories: `rg X src/` + `rg X tests/` + `rg X docs/`
+- Different tools on same target: `rg X` + `fd -g '*X*'` + `tokei`
+
+Anti-pattern: chaining greps with `&&` in one Bash call when they're
+independent — the shell still runs them sequentially.
