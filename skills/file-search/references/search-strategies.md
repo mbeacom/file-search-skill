@@ -91,22 +91,35 @@ rg -t php 'MiddlewareInterface'
 rg -t php 'PSR-15'
 ```
 
-Use `-f patterns.txt` for many patterns. Each match line shows which
-pattern hit (use `--json` to get pattern IDs reliably).
+Use `-f patterns.txt` for many patterns. Note: ripgrep does not annotate
+output with which `-e`/`-f` pattern matched — neither plain text nor
+`--json` exposes a stable pattern index. If you need provenance, run
+separate searches or post-process by re-matching the captured text.
 
-### 6b. Parallel tool calls for distinct scopes/intents
+`rg` also accepts multiple `-t` flags and multiple path arguments, so
+prefer batching scope into a single call:
 
-When queries differ enough that `-e` union would mix unrelated results
-(different file types, different directories, different post-processing),
-issue them as **parallel tool calls in a single message** rather than
-sequentially. The agent harness runs them concurrently; total wall time
-≈ slowest single call.
+```bash
+# Good: one walk, multiple types
+rg -t php -t js -t ts 'pattern'
+
+# Good: one walk, multiple paths
+rg 'pattern' src/ tests/ docs/
+```
+
+### 6b. Parallel tool calls for distinct intents
+
+Use parallel tool calls when the queries can't collapse into one `rg`
+invocation — different patterns in different scopes, different tools,
+or different post-processing. Issue them as **parallel tool calls in a
+single message**; the agent harness runs them concurrently and total
+wall time ≈ slowest single call.
 
 Good candidates for parallel calls:
 
-- Different file types: `rg -t php X` + `rg -t js X` + `rg -t ts X`
-- Different directories: `rg X src/` + `rg X tests/` + `rg X docs/`
+- Different patterns in different scopes: `rg 'Error' logs/` + `rg 'TODO' src/`
 - Different tools on same target: `rg X` + `fd -g '*X*'` + `tokei`
+- Different search modes: `rg 'pattern'` + `sg --pattern 'func($$$)'`
 
-Anti-pattern: chaining greps with `&&` in one Bash call when they're
-independent — the shell still runs them sequentially.
+Anti-pattern: chaining independent greps with `&&` in one Bash call —
+the shell still runs them sequentially.
