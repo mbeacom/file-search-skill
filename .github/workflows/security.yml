@@ -34,8 +34,10 @@ jobs:
     # the workflows themselves for misconfigurations (script injection,
     # missing permissions, vulnerable action SHAs).
     # Push/PR only — CodeQL on workflow files runs on changes, not on cron.
+    # Pinned to a commit SHA per OpenSSF Scorecard "Pinned-Dependencies"
+    # guidance (Renovate keeps the pin current).
     if: github.event_name != 'schedule'
-    uses: netresearch/.github/.github/workflows/codeql.yml@main
+    uses: netresearch/.github/.github/workflows/codeql.yml@b370fd97a0cd4a51f7d1b52969cfa411d199ac2b # main
     permissions:
       contents: read
       security-events: write
@@ -45,8 +47,10 @@ jobs:
     # OpenSSF Scorecard runs once a week and on default-branch pushes;
     # PRs are skipped because Scorecard requires write tokens we don't
     # want to grant to fork-originated PRs.
+    # Pinned to a commit SHA per OpenSSF Scorecard "Pinned-Dependencies"
+    # guidance (Renovate keeps the pin current).
     if: github.event_name != 'pull_request'
-    uses: netresearch/.github/.github/workflows/scorecard.yml@main
+    uses: netresearch/.github/.github/workflows/scorecard.yml@b370fd97a0cd4a51f7d1b52969cfa411d199ac2b # main
     permissions:
       contents: read
       security-events: write
