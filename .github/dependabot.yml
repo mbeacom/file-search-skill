@@ -1,3 +1,7 @@
+# Dependabot is intentionally scoped to GitHub Actions only.
+# Renovate (renovate.json with config:recommended) handles composer and npm
+# updates for this repo; running both bots on the same ecosystems would
+# produce duplicate PRs and conflicting automation.
 version: 2
 updates:
   - package-ecosystem: github-actions

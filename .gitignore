@@ -4,3 +4,7 @@
 .DS_Store
 vendor/
 composer.lock
+node_modules/
+.env
+.env.local
+.env.*.local
