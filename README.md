@@ -1,5 +1,10 @@
 # File Search Skill
 
+[![CI](https://github.com/netresearch/file-search-skill/actions/workflows/lint.yml/badge.svg)](https://github.com/netresearch/file-search-skill/actions/workflows/lint.yml)
+[![Release](https://img.shields.io/github/v/release/netresearch/file-search-skill?sort=semver)](https://github.com/netresearch/file-search-skill/releases)
+[![License](https://img.shields.io/badge/license-MIT%20AND%20CC--BY--SA--4.0-blue.svg)](#license)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/netresearch/file-search-skill/badge)](https://securityscorecards.dev/viewer/?uri=github.com/netresearch/file-search-skill)
+
 An AI agent skill that teaches efficient CLI-based code and file search
 strategies. Provides tool selection guidance, pattern recipes, and best
 practices for searching codebases of any size.
