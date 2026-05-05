@@ -11,6 +11,8 @@ on:
 
 jobs:
   gitleaks:
+    # Push/PR only — no need to re-scan unchanged history on the weekly cron.
+    if: github.event_name != 'schedule'
     uses: netresearch/.github/.github/workflows/gitleaks.yml@main
     secrets:
       GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
@@ -23,12 +25,16 @@ jobs:
       pull-requests: write
 
   composer-audit:
+    # Push/PR only — composer audit is a CI gate, not a scheduled task.
+    if: github.event_name != 'schedule'
     uses: netresearch/typo3-ci-workflows/.github/workflows/security.yml@main
 
   codeql:
     # Skill repo has no compiled source; default `actions` language scans
     # the workflows themselves for misconfigurations (script injection,
     # missing permissions, vulnerable action SHAs).
+    # Push/PR only — CodeQL on workflow files runs on changes, not on cron.
+    if: github.event_name != 'schedule'
     uses: netresearch/.github/.github/workflows/codeql.yml@main
     permissions:
       contents: read
