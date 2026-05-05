@@ -14,8 +14,6 @@ jobs:
     # Push/PR only — no need to re-scan unchanged history on the weekly cron.
     if: github.event_name != 'schedule'
     uses: netresearch/.github/.github/workflows/gitleaks.yml@main
-    permissions:
-      contents: read
     secrets:
       GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
@@ -30,9 +28,6 @@ jobs:
     # Push/PR only — composer audit is a CI gate, not a scheduled task.
     if: github.event_name != 'schedule'
     uses: netresearch/typo3-ci-workflows/.github/workflows/security.yml@main
-    permissions:
-      contents: read
-      security-events: write
 
   codeql:
     # Skill repo has no compiled source; default `actions` language scans
