@@ -9,6 +9,13 @@ on:
     # Weekly Scorecard refresh — independent of pushes so the badge stays current
     - cron: '37 4 * * 1'
 
+# Default GITHUB_TOKEN permissions are read-only at the workflow level;
+# individual jobs (and the reusable workflows they call) escalate as needed.
+# This satisfies CodeQL's "workflow does not contain permissions" rule and
+# OpenSSF Scorecard's Token-Permissions check.
+permissions:
+  contents: read
+
 jobs:
   gitleaks:
     # Push/PR only — no need to re-scan unchanged history on the weekly cron.
