@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  schedule:
+    # Weekly Scorecard refresh — independent of pushes so the badge stays current
+    - cron: '37 4 * * 1'
 
 jobs:
   gitleaks:
@@ -21,3 +24,25 @@ jobs:
 
   composer-audit:
     uses: netresearch/typo3-ci-workflows/.github/workflows/security.yml@main
+
+  codeql:
+    # Skill repo has no compiled source; default `actions` language scans
+    # the workflows themselves for misconfigurations (script injection,
+    # missing permissions, vulnerable action SHAs).
+    uses: netresearch/.github/.github/workflows/codeql.yml@main
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+  scorecard:
+    # OpenSSF Scorecard runs once a week and on default-branch pushes;
+    # PRs are skipped because Scorecard requires write tokens we don't
+    # want to grant to fork-originated PRs.
+    if: github.event_name != 'pull_request'
+    uses: netresearch/.github/.github/workflows/scorecard.yml@main
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+      actions: read
