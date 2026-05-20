@@ -15,6 +15,7 @@ practices for searching codebases of any size.
 |------|---------|----------|
 | [ripgrep](https://github.com/BurntSushi/ripgrep) (`rg`) | Ultra-fast text/regex search | `grep`, `grep -r` |
 | [ast-grep](https://github.com/ast-grep/ast-grep) (`sg`) | Structural/syntax-aware code search | complex regex hacks |
+| [semgrep](https://semgrep.dev/docs) (`semgrep`) | Security/lint rules at scale with taint analysis | hand-rolled regex CI checks |
 | [fd](https://github.com/sharkdp/fd) (`fd`) | Fast file finder | `find` |
 | [ripgrep-all](https://github.com/phiresky/ripgrep-all) (`rga`) | Search PDFs, Office docs, archives | manual text extraction |
 | [tokei](https://github.com/XAMPPRocky/tokei) | Fast code statistics by language | `cloc`, `wc -l` |
@@ -26,6 +27,7 @@ practices for searching codebases of any size.
 - **Use `fd` instead of `find`** for file discovery
 - **Use `rga` instead of `rg`** when searching non-code files (PDFs, Office docs, archives)
 - **Use `sg` instead of regex** when matching code structure
+- **Use `semgrep`** when you want a *catalog* of security/lint rules (taint, registry) — not just a single pattern
 - **Use `tokei` or `scc`** to assess codebase size, not `cloc` or `wc -l`
 - **Always start with targeted, narrow searches** and widen only if needed
 - **Always specify file types/languages** to limit search scope
@@ -96,6 +98,7 @@ skills/file-search/
   references/
     ripgrep-patterns.md             # Extensive rg pattern recipes by use case
     ast-grep-patterns.md            # Structural search patterns by language
+    semgrep-patterns.md             # Security/lint rules, taint mode, registry
     fd-guide.md                     # fd file finder guide
     rga-guide.md                    # ripgrep-all for non-code files
     tool-comparison.md              # Detailed comparison and decision guide
