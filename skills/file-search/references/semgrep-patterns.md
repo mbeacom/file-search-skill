@@ -60,8 +60,8 @@ semgrep -e 'cursor.execute("..." + $X)' --lang python .
 semgrep -e '$EL.innerHTML = $X' --lang js .
 semgrep -e 'document.write($X)' --lang js .
 
-# Go: ignored errors
-semgrep -e '_, _ = $F(...)' --lang go .
+# Go: ignored errors (both assignment and short-declaration forms)
+semgrep -e '_, _ = $F(...)' -e '_, _ := $F(...)' --lang go .
 
 # PHP: unsafe shell
 semgrep -e 'shell_exec($X)' --lang php .
@@ -121,12 +121,14 @@ semgrep ci --baseline-ref=origin/main
 
 ## When NOT to Use semgrep
 
-- **Free-form text search** → use `rg` instead. semgrep parses code; it
-  cannot match log lines, strings in YAML, or arbitrary text.
+- **Unstructured text search** → use `rg` instead. semgrep parses code
+  (and structured formats like YAML/JSON); it cannot match log lines or
+  free-form prose.
 - **One-off structural refactor with a rewrite** → use `sg` instead. Its
   `--rewrite` is first-class; semgrep autofix is more constrained.
-- **Files semgrep cannot parse** → semgrep skips them silently. If you
-  see "Scan skipped" warnings, fall back to `rg`/`sg`.
+- **Files semgrep cannot parse** → semgrep reports parse errors on
+  stderr but produces no findings for those files. If a file is
+  unsupported or unparseable, fall back to `rg`/`sg`.
 
 ## Further Reading
 
