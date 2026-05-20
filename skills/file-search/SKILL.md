@@ -21,14 +21,14 @@ Efficient CLI search tools for AI agents.
 | Search text in code files | `rg` (ripgrep) | `grep`, `grep -r` |
 | Find files by name/path | `fd` | `find`, `ls -R` |
 | Structural/syntax-aware code search | `sg` (ast-grep) | regex hacks |
-| Security/lint rules at scale (taint, registry) | `semgrep` | hand-rolled regex CI checks |
+| Apply rule packs (security/lint, taint) | `semgrep` | regex CI checks |
 | Search PDFs, Office docs, archives | `rga` (ripgrep-all) | manual extraction |
 | Count lines of code by language | `tokei` | `cloc`, `wc -l` |
 | Code stats with complexity metrics | `scc` | `cloc`, `tokei` |
 
-**Decision flow:** text/regex → `rg` | code structure / refactor →
-`sg` | apply a *catalog* of security/lint rules → `semgrep` | files by
-name → `fd` | PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
+**Decision flow:** text → `rg` | structural → `sg` | rule packs →
+`semgrep` | filenames → `fd` | PDFs/archives → `rga` | LOC →
+`tokei`/`scc`
 
 ## Quick Examples
 
@@ -36,7 +36,6 @@ name → `fd` | PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
 rg 'def \w+\(' -t py src/          # rg: text search in Python files
 rg -c 'TODO' -t js | wc -l         # rg: count first, then drill down
 sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js  # sg: structural replace
-semgrep --config=p/security-audit --severity=ERROR .  # semgrep: curated rule pack
 fd -g '*.test.ts' --changed-within 1d  # fd: -g for compound suffixes (NOT -e)
 fd -g '*_test.go' -X rg 'func Test'   # fd+rg: find files, verify contents
 rga 'quarterly revenue' docs/       # rga: search inside PDFs/archives
@@ -67,7 +66,7 @@ See [references/remote-handoff.md](references/remote-handoff.md).
 |-------|------|
 | rg flags, patterns, recipes | [references/ripgrep-patterns.md](references/ripgrep-patterns.md) |
 | ast-grep patterns by language | [references/ast-grep-patterns.md](references/ast-grep-patterns.md) |
-| semgrep rules, taint mode, registry | [references/semgrep-patterns.md](references/semgrep-patterns.md) |
+| semgrep rules and taint mode | [references/semgrep-patterns.md](references/semgrep-patterns.md) |
 | fd flags, usage, fd+rg combos | [references/fd-guide.md](references/fd-guide.md) |
 | rga formats, usage, caching | [references/rga-guide.md](references/rga-guide.md) |
 | tokei and scc usage | [references/code-metrics.md](references/code-metrics.md) |
