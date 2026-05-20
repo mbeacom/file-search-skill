@@ -19,7 +19,12 @@ What are you trying to do?
 |   |   --> Use rga (ripgrep-all)
 |   |
 |   |-- Need to match CODE STRUCTURE (not just text)?
-|       --> Use sg (ast-grep)
+|       |
+|       |-- One-off structural pattern / refactor?
+|       |   --> Use sg (ast-grep)
+|       |
+|       |-- Apply a CATALOG of security/lint rules (with dataflow)?
+|           --> Use semgrep
 |
 |-- Find FILES by name, path, or attributes?
 |   --> Use fd
@@ -74,6 +79,16 @@ What are you trying to do?
 - Finding anti-patterns or code smells structurally
 - You need to ignore comments and whitespace in matches
 - Regex would be too fragile for the code pattern
+
+**Choose semgrep when:**
+- Applying a curated rule pack (OWASP, CWE, framework-specific)
+- You need taint analysis (source → sink dataflow), not just pattern match
+- Wiring a security/lint gate into CI (`semgrep ci`)
+- Maintaining a reusable rule library in YAML across the team
+- The pattern is meaningless without severity/message metadata
+
+For inline patterns and recipes, see
+[references/semgrep-patterns.md](semgrep-patterns.md).
 
 ---
 
@@ -201,7 +216,7 @@ sudo apt install ripgrep fd-find
 # Note: fd binary is 'fdfind' on Debian/Ubuntu, alias to 'fd'
 
 # macOS (Homebrew)
-brew install ripgrep fd ast-grep ripgrep-all tokei scc
+brew install ripgrep fd ast-grep ripgrep-all tokei scc semgrep
 
 # Cargo (Rust)
 cargo install ripgrep fd-find ast-grep tokei
@@ -211,6 +226,9 @@ go install github.com/boyter/scc/v3@latest
 
 # npm (ast-grep)
 npm install -g @ast-grep/cli
+
+# pipx (semgrep — Python-based)
+pipx install semgrep
 ```
 
 ---
@@ -219,6 +237,7 @@ npm install -g @ast-grep/cli
 
 - ripgrep: https://github.com/BurntSushi/ripgrep
 - ast-grep: https://github.com/ast-grep/ast-grep
+- semgrep: https://semgrep.dev/docs
 - fd: https://github.com/sharkdp/fd
 - rga: https://github.com/phiresky/ripgrep-all
 - tokei: https://github.com/XAMPPRocky/tokei

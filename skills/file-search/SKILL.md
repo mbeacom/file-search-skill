@@ -2,12 +2,12 @@
 name: file-search
 description: "Use when searching codebases (text, structural/AST, files by name, PDFs/archives, code stats) or building context before a task."
 license: "(MIT AND CC-BY-SA-4.0). See LICENSE-MIT and LICENSE-CC-BY-SA-4.0"
-compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, rga, tokei, scc."
+compatibility: "Requires ripgrep (rg). Optional: fd, ast-grep, rga, tokei, scc, semgrep."
 metadata:
   author: Netresearch DTT GmbH
   version: "1.5.0"
   repository: https://github.com/netresearch/file-search-skill
-allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Bash(rga:*) Bash(tokei:*) Bash(scc:*) Read Glob Grep
+allowed-tools: Bash(rg:*) Bash(fd:*) Bash(sg:*) Bash(rga:*) Bash(tokei:*) Bash(scc:*) Bash(semgrep:*) Read Glob Grep
 ---
 
 # File Search Skill
@@ -21,13 +21,14 @@ Efficient CLI search tools for AI agents.
 | Search text in code files | `rg` (ripgrep) | `grep`, `grep -r` |
 | Find files by name/path | `fd` | `find`, `ls -R` |
 | Structural/syntax-aware code search | `sg` (ast-grep) | regex hacks |
+| Security/lint rules at scale (taint, registry) | `semgrep` | hand-rolled regex CI checks |
 | Search PDFs, Office docs, archives | `rga` (ripgrep-all) | manual extraction |
 | Count lines of code by language | `tokei` | `cloc`, `wc -l` |
 | Code stats with complexity metrics | `scc` | `cloc`, `tokei` |
 
-**Decision flow:** text/regex → `rg` | code structure (empty catches,
-function sigs, multi-line patterns) → `sg` | files by name → `fd` |
-PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
+**Decision flow:** text/regex → `rg` | code structure / refactor →
+`sg` | apply a *catalog* of security/lint rules → `semgrep` | files by
+name → `fd` | PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
 
 ## Quick Examples
 
@@ -35,6 +36,7 @@ PDFs/archives → `rga` | codebase stats → `tokei`/`scc`
 rg 'def \w+\(' -t py src/          # rg: text search in Python files
 rg -c 'TODO' -t js | wc -l         # rg: count first, then drill down
 sg --pattern 'console.log($$$)' --rewrite 'logger.info($$$)' --lang js  # sg: structural replace
+semgrep --config=p/security-audit --severity=ERROR .  # semgrep: curated rule pack
 fd -g '*.test.ts' --changed-within 1d  # fd: -g for compound suffixes (NOT -e)
 fd -g '*_test.go' -X rg 'func Test'   # fd+rg: find files, verify contents
 rga 'quarterly revenue' docs/       # rga: search inside PDFs/archives
@@ -65,6 +67,7 @@ See [references/remote-handoff.md](references/remote-handoff.md).
 |-------|------|
 | rg flags, patterns, recipes | [references/ripgrep-patterns.md](references/ripgrep-patterns.md) |
 | ast-grep patterns by language | [references/ast-grep-patterns.md](references/ast-grep-patterns.md) |
+| semgrep rules, taint mode, registry | [references/semgrep-patterns.md](references/semgrep-patterns.md) |
 | fd flags, usage, fd+rg combos | [references/fd-guide.md](references/fd-guide.md) |
 | rga formats, usage, caching | [references/rga-guide.md](references/rga-guide.md) |
 | tokei and scc usage | [references/code-metrics.md](references/code-metrics.md) |
